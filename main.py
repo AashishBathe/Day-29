@@ -79,7 +79,7 @@ def search():
                 for item in data:
                     if website == item:
                         messagebox.showinfo(title=website, message=f"Email: {data[item]['email']}"
-                                                                   f"\n Password: {data[item]['password']}")
+                                                                   f"\nPassword: {data[item]['password']}")
             else:
                 messagebox.showerror(title="Oops", message="No existing data.")
 
