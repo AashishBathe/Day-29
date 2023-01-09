@@ -39,20 +39,49 @@ def add_pass():
     if len(password) == 0 or len(website) == 0 or len(email) == 0:
         messagebox.showerror(title="Oops", message="Please do not leave any fields empty!")
     else:
-        with open("data.json", mode='r') as file:
+        try:
+            with open("data.json", mode='r') as file:
+                pass
             # json.dump(new_data, file, indent=4) # Write data to json file
-            # Reading old data
+
+        except FileNotFoundError:
+            with open("data.json", "w") as file:
+                json.dump({}, file)
+
+        finally:
+            with open("data.json", "r") as file:
+                # Reading old data
+                data = json.load(file)
+                # Updating old data with new data
+                data.update(new_data)
+
+            with open("data.json", mode='w') as file:
+                # Saving updated data
+                json.dump(data, file, indent=4)
+                website_input.delete(0, 'end')
+                password_input.delete(0, 'end')
+                website_input.focus()
+
+# ------------------------- SEARCH PASSWORD ---------------------------- #
+
+
+def search():
+    try:
+        with open("data.json", "r") as file:
+            pass
+    except FileNotFoundError:
+        messagebox.showerror(title="Oops", message="File does not exist.")
+    else:
+        website = website_input.get()
+        with open("data.json", "r") as file:
             data = json.load(file)
-            # Updating old data with new data
-            data.update(new_data)
-
-        with open("data.json", mode='w') as file:
-            # Saving updated data
-            json.dump(data, file, indent=4)
-            website_input.delete(0, 'end')
-            password_input.delete(0, 'end')
-            website_input.focus()
-
+            if website in data:
+                for item in data:
+                    if website == item:
+                        messagebox.showinfo(title=website, message=f"Email: {data[item]['email']}"
+                                                                   f"\n Password: {data[item]['password']}")
+            else:
+                messagebox.showerror(title="Oops", message="No existing data.")
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -72,7 +101,7 @@ password_text = Label(text="Password:")
 password_text.grid(row=3, column=0, sticky=E)
 website_input = Entry()
 website_input.focus()
-website_input.grid(row=1, column=1, columnspan=2, sticky=EW)
+website_input.grid(row=1, column=1, sticky=EW)
 email_input = Entry(width=52)
 email_input.insert(0, "aashish@gmail.com")
 email_input.grid(row=2, column=1, columnspan=2, sticky=EW)
@@ -80,6 +109,8 @@ password_input = Entry()
 password_input.grid(row=3, column=1, sticky=EW)
 generate_button = Button(text="Generate Password", command=generate_pass)
 generate_button.grid(row=3, column=2)
+search_button = Button(text="Search", command=search)
+search_button.grid(row=1, column=2, sticky=EW)
 add_button = Button(text="Add", command=add_pass)
 add_button.grid(row=4, column=1, columnspan=2, sticky=EW)
 
