@@ -7,6 +7,7 @@ import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_pass():
+    password_input.delete(0, END)
     # Pass Generator from Day 5.
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
                'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -31,7 +32,7 @@ def add_pass():
     website = website_input.get()
     email = email_input.get()
     new_data = {
-        website: {
+        website.title(): {
             "email": email,
             "password": password
         }
@@ -75,10 +76,11 @@ def search():
         website = website_input.get()
         with open("data.json", "r") as file:
             data = json.load(file)
-            if website in data:
+            if website.title() in data:
                 for item in data:
-                    if website == item:
-                        messagebox.showinfo(title=website, message=f"Email: {data[item]['email']}"
+                    if website.title() == item:
+                        pyperclip.copy(data[item]["password"])
+                        messagebox.showinfo(title=item, message=f"Email: {data[item]['email']}"
                                                                    f"\nPassword: {data[item]['password']}")
             else:
                 messagebox.showerror(title="Oops", message="No existing data.")
